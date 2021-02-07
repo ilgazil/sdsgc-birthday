@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 import config from './config.json';
 
-import { composeCommand, prefix } from './src/core';
+import { composeCommand } from './src/core';
 import { next } from './src/lib';
 import { addToCalendar, getCalendar, importCalendar } from './src/store';
 
@@ -20,7 +20,7 @@ client.on('message', async (message) => {
       try {
         return message.reply(command === 'import' ? importCalendar(args[0]) : addToCalendar(args[0]));
       } catch (e) {
-        return message.reply(`Import invalide. Exécutez \`${prefix} help\` pour plus d'informations sur l'import.`);
+        return message.reply(`Import invalide. Exécutez \`${config.prefix} help\` pour plus d'informations sur l'import.`);
       }
     }
 
@@ -36,7 +36,7 @@ client.on('message', async (message) => {
     }
 
     if (!Object.keys(calendar).length) {
-      return message.reply(`Calendrier vide. Exécutez \`${prefix} help\` pour plus d'informations sur l'import.`);
+      return message.reply(`Calendrier vide. Exécutez \`${config.prefix} help\` pour plus d'informations sur l'import.`);
     }
 
     if (command === 'next') {

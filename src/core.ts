@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 
-export const prefix = '!birth';
+import config from '../config.json';
 
 export interface Command {
   command: string;
@@ -12,7 +12,7 @@ export function composeCommand(message: Message): Command {
     throw 'Bot message';
   };
 
-  if (!message.content.startsWith(prefix)) {
+  if (!message.content.startsWith(config.prefix)) {
     throw 'Not concerned';
   };
 
@@ -20,7 +20,7 @@ export function composeCommand(message: Message): Command {
     throw 'Out of scope';
   }
 
-  const raw = message.content.slice(prefix.length).trim();
+  const raw = message.content.slice(config.prefix.length).trim();
   const args = raw.split(' ');
 
   return {

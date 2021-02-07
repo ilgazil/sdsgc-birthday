@@ -14,6 +14,7 @@ Currently in development. Not usable right now.
 {
   "botToken": "<Your bot token, retrieved from https://discord.com/developers/>",
   "defaultAvatar": "<The default bot avatar>",
+  "prefix": "<Command prefix>",
   "publishChannel": "<The channel where you want to announce birthdays>"
 }
 ```
