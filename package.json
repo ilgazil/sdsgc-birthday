@@ -1,0 +1,15 @@
+{
+  "name": "sdsgc-birthday",
+  "version": "1.0.0",
+  "description": "Netmarble's Seven Deadly Sins Grand Cross Discord bot birthday reminder",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "typescript": "^4.1.3"
+  }
+}

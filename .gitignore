@@ -1,0 +1,17 @@
+config.json
+node_modules
+
+# Log files
+npm-debug.log*
+
+# System
+.DS_Store
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
