@@ -1,7 +1,7 @@
 interface ImportEntry {
-  portrait: string;
+  portrait?: string;
   birthdate: string;
-  gift: string;
+  gift?: string;
   location?: string;
 };
 type Import = Record<string, ImportEntry>;
@@ -19,10 +19,10 @@ export function isImportEntry(character: unknown): character is Character {
     return false;
   }
 
-  return ('portrait' in character) &&
-    ('gift' in character) &&
-    (typeof character['location'] === 'string' || typeof character['location'] === 'undefined') &&
-    !!(/\d{2}-\d{2}/.exec(character['birthdate']))
+  return (typeof character['portrait'] === 'string' || typeof character['portrait'] === 'undefined') &&
+    !!(/\d{2}-\d{2}/.exec(character['birthdate'])) &&
+    (typeof character['gift'] === 'string' || typeof character['gift'] === 'undefined') &&
+    (typeof character['location'] === 'string' || typeof character['location'] === 'undefined')
   ;
 }
 
