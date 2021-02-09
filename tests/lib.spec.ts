@@ -14,6 +14,18 @@ describe('lib', () => {
         );
 
       expect(next({
+        '09-06': [
+          {
+            name: 'Jericho',
+            birthdate: '09-06',
+          }
+        ],
+        '10-30': [
+          {
+            name: 'Derrierie',
+            birthdate: '10-30',
+          }
+        ],
         '08-23': [
           {
             name: 'Camila',
@@ -31,10 +43,22 @@ describe('lib', () => {
       jest
         .spyOn(global.Date, 'now')
         .mockImplementationOnce(() =>
-          new Date('2021-09-04T12:45:07.135Z').valueOf()
+          new Date('2021-10-30T12:45:07.135Z').valueOf()
         );
 
       expect(next({
+        '09-06': [
+          {
+            name: 'Jericho',
+            birthdate: '09-06',
+          }
+        ],
+        '10-30': [
+          {
+            name: 'Derrierie',
+            birthdate: '10-30',
+          }
+        ],
         '08-23': [
           {
             name: 'Camila',

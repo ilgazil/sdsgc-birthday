@@ -13,11 +13,11 @@ export function next(calendar: Calendar): string {
   let currentDate = `${month.slice(month.length - 2)}-${date.slice(date.length - 2)}`;
 
   // Next birth date is for next year...
-  if (dates[dates.length - 1] < currentDate) {
+  if (dates[dates.length - 1] <= currentDate) {
     currentDate = '01-01';
   }
 
-  const nextDate = dates.find((date) => date >= currentDate);
+  const nextDate: string = dates.find((date) => date >= currentDate) as string;
 
   return `Prochain anniversaire dans x (@todo) jours : ${calendar[nextDate].map(({ name }) => name).join(', ')}.`;
 }

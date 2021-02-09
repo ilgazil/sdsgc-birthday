@@ -12,21 +12,35 @@ export interface Character extends ImportEntry {
 
 export type Calendar = Record<string, Character[]>;
 
+export class InvalidImportError extends Error {};
+
 let calendar: Calendar = {};
 
-export function isImportEntry(character: unknown): character is Character {
+export function isImportEntry(character: any): character is Character {
   if (!character || typeof character !== 'object') {
     return false;
   }
 
-  return (typeof character['portrait'] === 'string' || typeof character['portrait'] === 'undefined') &&
-    !!(/\d{2}-\d{2}/.exec(character['birthdate'])) &&
-    (typeof character['gift'] === 'string' || typeof character['gift'] === 'undefined') &&
-    (typeof character['location'] === 'string' || typeof character['location'] === 'undefined')
-  ;
+  if ('portrait' in character && typeof character['portrait'] !== 'string') {
+    return false;
+  }
+
+  if (!(/\d{2}-\d{2}/.exec(character['birthdate']))) {
+    return false;
+  }
+
+  if ('gift' in character && typeof character['gift'] !== 'string') {
+    return false;
+  }
+
+  if ('location' in character && typeof character['location'] !== 'string') {
+    return false;
+  }
+
+  return true;
 }
 
-export function isImport(importedCalendar: unknown): importedCalendar is Import {
+export function isImport(importedCalendar: any): importedCalendar is Import {
   if (!importedCalendar || typeof importedCalendar !== 'object') {
     return false;
   }
@@ -40,16 +54,16 @@ export function isImport(importedCalendar: unknown): importedCalendar is Import 
   });
 }
 
-export function composeCalendar(importedCalendar: Import): Calendar {
-  return Object.keys(importedCalendar).reduce((calendar, name) => {
-    const birthdate = importedCalendar[name].birthdate;
+export function composeCalendar(input: Import): Calendar {
+  return Object.keys(input).reduce((calendar: Calendar, name) => {
+    const birthdate = input[name].birthdate;
 
     if (!(birthdate in calendar)) {
       calendar[birthdate] = [];
     }
 
     calendar[birthdate].push({
-      ...importedCalendar[name],
+      ...input[name],
       name,
     });
 
@@ -57,31 +71,56 @@ export function composeCalendar(importedCalendar: Import): Calendar {
   }, {});
 }
 
+export function composeImport(calendar: Calendar): Import {
+  return Object.keys(calendar).reduce((output: Import, date) => {
+    calendar[date].forEach((character) => output[character.name] = {
+      portrait: character.portrait,
+      birthdate: character.birthdate,
+      gift: character.gift,
+      location: character.location,
+    })
+
+    return output;
+  }, {});
+}
+
+export function sortImport(input: Import): Import {
+  return Object.keys(input).sort((a, b) => a > b ? 1 : -1).reduce((sortedInput: Import, name) => {
+    sortedInput[name] = input[name];
+
+    return sortedInput;
+  }, {});
+}
+
 export function importCalendar(raw: string): string {
   const importedCalendar = JSON.parse(raw);
 
   if (!isImport(importedCalendar)) {
-    throw 'Invalid import';
+    throw new InvalidImportError('Invalid import');
   }
 
-  calendar = composeCalendar(importedCalendar);
+  calendar = composeCalendar(sortImport(importedCalendar));
 
-  return `Calendrier importé avec ${Object.keys(calendar).length} anniversaires.`;
+  return `Calendrier importé avec succès.`;
+}
+
+export function exportCalendar(): Import {
+  return sortImport(composeImport(calendar));
 }
 
 export function addToCalendar(raw: string): string {
-  const importedCalendar = JSON.parse(raw);
+  const input = JSON.parse(raw);
 
-  if (!isImport(importedCalendar)) {
-    throw 'Invalid import';
+  if (!isImport(input)) {
+    throw new InvalidImportError('Invalid import');
   }
 
-  calendar = {
-    ...calendar,
-    ...composeCalendar(importedCalendar),
-  };
+  calendar = composeCalendar(sortImport({
+    ...composeImport(calendar),
+    ...input,
+  }));
 
-  return `${Object.keys(importedCalendar).length} anniversaires importés (ou mis à jour).`;
+  return `Calendrier mis à jour avec succès.`;
 }
 
 export function getCalendar(): Calendar {
