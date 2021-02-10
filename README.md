@@ -1,3 +1,5 @@
+[![Build Status](https://api.travis-ci.com/ilgazil/sdsgc-birthday.svg?branch=master)](https://www.travis-ci.com/github/ilgazil/sdsgc-birthday)
+
 # SDSGC birthday
 
 Netmarble's Seven Deadly Sins Grand Cross Discord bot birthday reminder
@@ -8,14 +10,21 @@ Currently in development. Not usable right now.
 
 ## Configuration
 
-* Add a `config.json` file with the following entries:
+* Add a `.env` file with the following entries:
 
-```json
-{
-  "botToken": "<Your bot token, retrieved from https://discord.com/developers/>",
-  "defaultAvatar": "<The default bot avatar>",
-  "defaultUsername": "<The default bot user name>",
-  "prefix": "<Command prefix>",
-  "publishChannel": "<The channel where you want to announce birthdays>"
-}
+```dotenv
+# Required - Bot token retrieved from https://discord.com/developers/
+BOT_TOKEN=
+
+# Required - Channel name to publish birthdays
+PUBLISH_CHANNEL=
+
+# Required - Bot avatar url
+BOT_AVATAR=
+
+# Optional - Bot username (default: SDSGC-Birthday)
+BOT_USERNAME=SDSGC-Birthday
+
+# Optional - Command prefix (default: !birth)
+COMMAND_PREFIX=!birth
 ```

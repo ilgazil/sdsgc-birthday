@@ -1,0 +1,9 @@
+language: node_js
+
+node_js:
+  - 12
+
+env:
+  - BOT_TOKEN=some.bot.token
+  - DEFAULT_AVATAR=http://foo.bar/avatar
+  - PUBLISH_CHANNEL="foo-channel"

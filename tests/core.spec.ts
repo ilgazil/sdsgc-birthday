@@ -1,6 +1,5 @@
 import { Message } from 'discord.js';
-import { composeCommand } from '../src/core';
-import config from '../config.json';
+import { composeCommand, COMMAND_PREFIX } from '../src/core';
 
 describe('core', () => {
   describe('composeCommand', () => {
@@ -19,7 +18,7 @@ describe('core', () => {
     it('should parse raw entry', () => {
       expect(composeCommand({
         author: { bot: false },
-        content: `${config.prefix} Command with args`,
+        content: `${COMMAND_PREFIX} Command with args`,
       } as Message)).toEqual({
         name: 'command',
         args: ['with', 'args'],
@@ -29,7 +28,7 @@ describe('core', () => {
     it('should set `next` as default command', () => {
       expect(composeCommand({
         author: { bot: false },
-        content: `${config.prefix}`,
+        content: `${COMMAND_PREFIX}`,
       } as Message)).toEqual({
         name: 'next',
         args: [],

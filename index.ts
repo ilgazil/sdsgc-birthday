@@ -1,9 +1,17 @@
 import Discord from 'discord.js';
-import config from './config.json';
 
-import { composeCommand } from './src/core';
+import { COMMAND_PREFIX, composeCommand } from './src/core';
 import { missing, next } from './src/util';
 import { addToCalendar, Character, getCalendar, importCalendar } from './src/store';
+
+const BOT_TOKEN = process.env.BOT_TOKEN || '';
+const DEFAULT_AVATAR = process.env.DEFAULT_AVATAR || '';
+const DEFAULT_USERNAME = process.env.DEFAULT_USERNAME || 'SDSGC-Birthday';
+const PUBLISH_CHANNEL = process.env.PUBLISH_CHANNEL || '';
+
+if (!BOT_TOKEN || !DEFAULT_AVATAR || !PUBLISH_CHANNEL) {
+  throw 'Wrong config, please refer to README.md';
+}
 
 const client = new Discord.Client();
 
@@ -23,7 +31,7 @@ client.on('message', async (message) => {
     try {
       return message.reply(command.name === 'import' ? importCalendar(command.args[0]) : addToCalendar(command.args[0]));
     } catch (e) {
-      return message.reply(`Import invalide. Exécutez \`${config.prefix} help\` pour plus d'informations sur l'import.`);
+      return message.reply(`Import invalide. Exécutez \`${COMMAND_PREFIX} help\` pour plus d'informations sur l'import.`);
     }
   }
 
@@ -43,7 +51,7 @@ client.on('message', async (message) => {
   }
 
   if (!Object.keys(calendar).length) {
-    return message.reply(`Calendrier vide. Exécutez \`${config.prefix} help\` pour plus d'informations sur l'import.`);
+    return message.reply(`Calendrier vide. Exécutez \`${COMMAND_PREFIX} help\` pour plus d'informations sur l'import.`);
   }
 
   if (command.name === 'next') {
@@ -66,8 +74,8 @@ async function broadcastBirthdays(characters: Character[]) {
     return;
   }
 
-  const defaultUsername = client.user?.username || config.defaultUsername;
-  const defaultAvatar = client.user?.avatar || config.defaultAvatar;
+  const defaultUsername = client.user?.username || DEFAULT_USERNAME;
+  const defaultAvatar = client.user?.avatar || DEFAULT_AVATAR;
 
   characters.forEach(async (character) => {
     try {
@@ -81,7 +89,7 @@ async function broadcastBirthdays(characters: Character[]) {
         await client.user?.setUsername(character.name);
       }
 
-      const channel = client.channels.cache.get(config.publishChannel);
+      const channel = client.channels.cache.get(`#${PUBLISH_CHANNEL}`);
 
       if (channel?.isText()) {
         channel.send(`C'est mon anniversaire !`);
@@ -99,4 +107,4 @@ async function broadcastBirthdays(characters: Character[]) {
   }
 }
 
-client.login(config.botToken);
+client.login(BOT_TOKEN);
