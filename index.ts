@@ -2,7 +2,7 @@ import Discord from 'discord.js';
 import config from './config.json';
 
 import { composeCommand } from './src/core';
-import { next } from './src/lib';
+import { missing, next } from './src/util';
 import { addToCalendar, Character, getCalendar, importCalendar } from './src/store';
 
 const client = new Discord.Client();
@@ -36,6 +36,10 @@ client.on('message', async (message) => {
 
     //@todo upload json file
     return message.reply(JSON.stringify(calendar));
+  }
+
+  if (command.name === 'missing') {
+    return message.reply(await missing(calendar));
   }
 
   if (!Object.keys(calendar).length) {

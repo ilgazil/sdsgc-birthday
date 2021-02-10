@@ -107,7 +107,7 @@ describe('store', () => {
   describe('exportCalendar', () => {
     importCalendar(`{"Foo":{"birthdate":"01-01"},"Bar":{"birthdate":"01-02"}}`);
 
-    expect(exportCalendar()).toEqual({
+    expect(exportCalendar(getCalendar())).toEqual({
       Bar: { birthdate: '01-02' },
       Foo: { birthdate: '01-01' },
     });

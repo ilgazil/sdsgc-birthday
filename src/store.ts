@@ -104,7 +104,7 @@ export function importCalendar(raw: string): string {
   return `Calendrier importé avec succès.`;
 }
 
-export function exportCalendar(): Import {
+export function exportCalendar(calendar: Calendar): Import {
   return sortImport(composeImport(calendar));
 }
 
