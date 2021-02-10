@@ -7,3 +7,10 @@ env:
   - BOT_TOKEN=some.bot.token
   - DEFAULT_AVATAR=http://foo.bar/avatar
   - PUBLISH_CHANNEL="foo-channel"
+
+scripts:
+  - npm install codecov -g
+  - npx jest --ci --coverage
+
+after_success:
+  - codecov

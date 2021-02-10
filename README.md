@@ -1,4 +1,5 @@
 [![Build Status](https://api.travis-ci.com/ilgazil/sdsgc-birthday.svg?branch=master)](https://www.travis-ci.com/github/ilgazil/sdsgc-birthday)
+[![codecov](https://codecov.io/gh/ilgazil/sdsgc-birthday/branch/master/graph/badge.svg?token=BRGP8BE7J0)](https://codecov.io/gh/ilgazil/sdsgc-birthday)
 
 # SDSGC birthday
 
