@@ -1,6 +1,9 @@
+import { Client } from 'discord.js';
 import fetch from 'node-fetch';
 import matchAll from 'string.prototype.matchall';
-import { Calendar, exportCalendar } from './store';
+
+import config from './config';
+import { Calendar, Character, exportCalendar, getCalendar } from './store';
 
 export async function missing(calendar: Calendar): Promise<string> {
   const importedCharacters = Object.keys(exportCalendar(calendar));
@@ -33,6 +36,12 @@ export async function missing(calendar: Calendar): Promise<string> {
   }
 }
 
+export function composeDateIndex(reference: Date): string {
+  const month = `0${reference.getMonth() + 1}`;
+  const date = `0${reference.getDate()}`;
+  return `${month.slice(month.length - 2)}-${date.slice(date.length - 2)}`;
+}
+
 export function next(calendar: Calendar): string {
   const dates = Object.keys(calendar).sort((a, b) => a < b ? -1 : 1);
 
@@ -40,10 +49,7 @@ export function next(calendar: Calendar): string {
     return '';
   }
 
-  const now = new Date(Date.now());
-  const month = `0${now.getMonth() + 1}`;
-  const date = `0${now.getDate()}`;
-  let currentDate = `${month.slice(month.length - 2)}-${date.slice(date.length - 2)}`;
+  let currentDate = composeDateIndex(new Date(Date.now()));
 
   // Next birth date is for next year...
   if (dates[dates.length - 1] <= currentDate) {
@@ -53,4 +59,79 @@ export function next(calendar: Calendar): string {
   const nextDate: string = dates.find((date) => date >= currentDate) as string;
 
   return `Prochain anniversaire dans x (@todo) jours : ${calendar[nextDate].map(({ name }) => name).join(', ')}.`;
+}
+
+export function startCron(client: Client) {
+  function handle() {
+    const now = new Date(Date.now());
+    broadcastBirthdays(client, getCalendar()[composeDateIndex(new Date(Date.now()))] || []);
+  }
+
+  const now = new Date(Date.now());
+
+  setTimeout(() => {
+    handle();
+    setInterval(handle, 3600000);
+  }, 60000 * (59 - now.getMinutes()) + 1000 * (60 - now.getSeconds()));
+}
+
+export async function broadcastBirthdays(client: Client, characters: Character[]) {
+  if (!characters.length) {
+    return;
+  }
+
+  const defaultAvatar = client.user?.avatar || config.bot.avatar;
+  const defaultUsername = client.user?.username || config.bot.username;
+
+  const errors: { character?: Character, message: string }[] = [];
+
+  return new Promise((resolve, reject) => {
+    const promises = characters.map((character) => async () => {
+      try {
+        if (character.portrait) {
+          try {
+            await client.user?.setAvatar(character.portrait);
+          } catch (e) {
+            await client.user?.setAvatar(defaultAvatar);
+          }
+        } else {
+          if (client.user?.avatar !== defaultAvatar) {
+            await client.user?.setAvatar(defaultAvatar);
+          }
+        }
+
+        await client.user?.setUsername(character.name);
+
+        const channel = client.channels.cache.get(`#${config.server.channel}`);
+
+        if (channel?.isText()) {
+          await channel.send(`C'est mon anniversaire !`);
+        }
+      } catch (e) {
+        errors.push({ character, message: e.message });
+      }
+    });
+
+    promises.push(async () => {
+      try {
+        if (client.user?.avatar !== defaultAvatar) {
+          await client.user?.setAvatar(defaultAvatar);
+        }
+
+        await client.user?.setUsername(defaultUsername);
+      } catch (e) {
+        errors.push({ message: e.message });
+      }
+
+      if (errors.length) {
+        reject(`Errors occured!\n${errors.map(({ character, message }) => `${character?.name || 'While restoring config'}: ${message}`).join('\n')}`);
+      }
+
+      resolve(undefined);
+    });
+
+    promises.reduce(async (previousPromise, promise) => {
+      previousPromise.then(promise);
+    }, Promise.resolve())
+  });
 }

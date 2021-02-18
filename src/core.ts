@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 
-export const COMMAND_PREFIX = process.env.COMMAND_PREFIX || '!birth';
+import config from './config';
 
 export interface Command {
   name: string;
@@ -12,11 +12,11 @@ export function composeCommand(message: Message): Command | null {
     return null;
   };
 
-  if (!message.content.startsWith(COMMAND_PREFIX)) {
+  if (!message.content.startsWith(config.bot.command)) {
     return null;
   };
 
-  const raw = message.content.slice(COMMAND_PREFIX.length).trim();
+  const raw = message.content.slice(config.bot.command.length).trim();
   const args = raw.split(' ');
   const name = args.shift();
 
