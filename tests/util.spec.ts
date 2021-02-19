@@ -327,7 +327,6 @@ describe('lib', () => {
       expect(setUsername).toHaveBeenNthCalledWith(4, config.bot.username);
     });
 
-
     it('should throw errors after all birthdays are handled', async () => {
       const setUsername = jest.fn()
         .mockImplementationOnce(() => {})

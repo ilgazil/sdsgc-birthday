@@ -61,7 +61,7 @@ export function next(calendar: Calendar): string {
   return `Prochain anniversaire dans x (@todo) jours : ${calendar[nextDate].map(({ name }) => name).join(', ')}.`;
 }
 
-export function startCron(client: Client) {
+export function startCron(client: Client): void {
   function handle() {
     const now = new Date(Date.now());
     broadcastBirthdays(client, getCalendar()[composeDateIndex(new Date(Date.now()))] || []);
@@ -75,7 +75,7 @@ export function startCron(client: Client) {
   }, 60000 * (59 - now.getMinutes()) + 1000 * (60 - now.getSeconds()));
 }
 
-export async function broadcastBirthdays(client: Client, characters: Character[]) {
+export async function broadcastBirthdays(client: Client, characters: Character[]): Promise<void> {
   if (!characters.length) {
     return;
   }
@@ -85,8 +85,8 @@ export async function broadcastBirthdays(client: Client, characters: Character[]
 
   const errors: { character?: Character, message: string }[] = [];
 
-  return new Promise((resolve, reject) => {
-    const promises = characters.map((character) => async () => {
+  await characters
+    .map((character) => async () => {
       try {
         if (character.portrait) {
           try {
@@ -110,28 +110,24 @@ export async function broadcastBirthdays(client: Client, characters: Character[]
       } catch (e) {
         errors.push({ character, message: e.message });
       }
-    });
+    })
+    .reduce(async (previousPromise, promise) => {
+      await previousPromise;
 
-    promises.push(async () => {
-      try {
-        if (client.user?.avatar !== defaultAvatar) {
-          await client.user?.setAvatar(defaultAvatar);
-        }
+      return promise();
+    }, Promise.resolve());
 
-        await client.user?.setUsername(defaultUsername);
-      } catch (e) {
-        errors.push({ message: e.message });
-      }
+  try {
+    if (client.user?.avatar !== defaultAvatar) {
+      await client.user?.setAvatar(defaultAvatar);
+    }
 
-      if (errors.length) {
-        reject(`Errors occured!\n${errors.map(({ character, message }) => `${character?.name || 'While restoring config'}: ${message}`).join('\n')}`);
-      }
+    await client.user?.setUsername(defaultUsername);
+  } catch (e) {
+    errors.push({ message: e.message });
+  }
 
-      resolve(undefined);
-    });
-
-    promises.reduce(async (previousPromise, promise) => {
-      previousPromise.then(promise);
-    }, Promise.resolve())
-  });
+  if (errors.length) {
+    throw `Errors occured!\n${errors.map(({ character, message }) => `${character?.name || 'While restoring config'}: ${message}`).join('\n')}`;
+  }
 }
