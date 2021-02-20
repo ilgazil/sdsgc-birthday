@@ -105,11 +105,23 @@ describe('store', () => {
   });
 
   describe('exportCalendar', () => {
-    importCalendar(`{"Foo":{"birthdate":"01-01"},"Bar":{"birthdate":"01-02"}}`);
+    it('should export given calendar', () => {
+      expect(exportCalendar({
+        '01-01': [{ name: 'Foo', birthdate: '01-01' }],
+        '01-02': [{ name: 'Bar', birthdate: '01-02' }],
+      })).toEqual({
+        Bar: { birthdate: '01-02' },
+        Foo: { birthdate: '01-01' },
+      });
+    });
 
-    expect(exportCalendar(getCalendar())).toEqual({
-      Bar: { birthdate: '01-02' },
-      Foo: { birthdate: '01-01' },
+    it('should export store calendar by default', () => {
+      importCalendar(`{"Foo":{"birthdate":"01-01"},"Bar":{"birthdate":"01-02"}}`);
+
+      expect(exportCalendar()).toEqual({
+        Bar: { birthdate: '01-02' },
+        Foo: { birthdate: '01-01' },
+      });
     });
   });
 });
