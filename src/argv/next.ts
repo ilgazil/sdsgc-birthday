@@ -3,7 +3,7 @@ import { next } from '../util';
 
 export const command = 'next';
 
-export const describe = 'Check external database to get next birthdays';
+export const describe = 'Provide incoming birthdays';
 
 export const handler = () => {
   next(getCalendar());

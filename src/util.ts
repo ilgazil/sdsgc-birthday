@@ -1,6 +1,6 @@
 import { Client } from 'discord.js';
+import matchAll from 'match-all';
 import fetch from 'node-fetch';
-import matchAll from 'string.prototype.matchall';
 
 import config from './config';
 import { Calendar, Character, exportCalendar, getCalendar } from './store';
@@ -12,9 +12,9 @@ export async function missing(calendar: Calendar): Promise<string> {
     const result = await (await fetch('https://www.sdsgc.gg/characters')).text();
     const allCharacters: string[] = [];
 
-    for (let match of matchAll(result, /img[^>]+character-icon[^>]+alt="(\w+)/gi)) {
-      if (allCharacters.indexOf(match[1]) === -1) {
-        allCharacters.push(match[1]);
+    for (let match of matchAll(result, /img[^>]+character-icon[^>]+alt="(\w+)/gi).toArray()) {
+      if (allCharacters.indexOf(match) === -1) {
+        allCharacters.push(match);
       }
     }
 

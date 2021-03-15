@@ -1,5 +1,3 @@
-import { config } from "dotenv/types";
-
 const token = process.env.BOT_TOKEN;
 const avatar = process.env.BOT_AVATAR;
 const channel = process.env.PUBLISH_CHANNEL;
