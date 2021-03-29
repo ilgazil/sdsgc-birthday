@@ -1,7 +1,7 @@
 {
-  "name": "sdsgc-birthday",
+  "name": "sdsgc-aide-de-camp",
   "version": "1.0.0",
-  "description": "Netmarble's Seven Deadly Sins Grand Cross Discord bot birthday reminder",
+  "description": "Netmarble's Seven Deadly Sins Grand Cross aide-de-camp Discord bot",
   "main": "index.js",
   "scripts": {
     "build": "npx tsc --outDir dist index.ts",

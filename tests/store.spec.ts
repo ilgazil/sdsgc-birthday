@@ -1,4 +1,4 @@
-import { addToCalendar, composeCalendar, getCalendar, importCalendar, isImport, isImportEntry, InvalidImportError, exportCalendar } from '../src/store';
+import { addToCalendar, getCalendar, importCalendar, isImport, isImportEntry, InvalidImportError, exportCalendar } from '../src/store';
 
 describe('store', () => {
   describe('isImportEntry', () => {

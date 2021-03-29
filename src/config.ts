@@ -10,8 +10,8 @@ const config = {
   bot: {
     token: token,
     avatar: avatar,
-    username: process.env.BOT_USERNAME || 'SDSGC-Birthday',
-    command: process.env.COMMAND_PREFIX || '!birth',
+    username: process.env.BOT_USERNAME || 'Aide-de-camp',
+    command: process.env.COMMAND_PREFIX || '!adc',
   },
   server: {
     channel: channel,
